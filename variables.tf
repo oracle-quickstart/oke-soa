@@ -48,6 +48,9 @@ variable "fss_subnet_id" {
 variable "fss_source_cidr" {
   default = "0.0.0.0/0"
 }
+variable "ad_number" {
+  default = 2
+}
 
 variable "mount_path" {
   default = "/soa_domains"

@@ -76,7 +76,10 @@ cd oke-soa
 
 Create a `terraform.tfvars` file from the `terraform.tfvars.template` file and populate the following mandatory information:
 
-```yaml
+```bash
+## Copyright © 2021, Oracle and/or its affiliates. 
+## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
+
 tenancy_ocid     = "ocid1.tenancy.oc1..."
 compartment_ocid = "ocid1.compartment.oc1..."
 region           = "us-ashburn-1"
@@ -84,7 +87,7 @@ region           = "us-ashburn-1"
 deployment_name = "SOA-k8s"
 soa_domain_name = "mysoa"
 
-# Domain Type musrt be one of soa, soaess, soaosb, soaessosb
+# Domain Type must be one of soa, soaess, soaosb, soaessosb
 soa_domain_type = "soaessosb"
 
 ## Things to provision
@@ -104,30 +107,37 @@ provision_database = true
 provision_weblogic_operator = true
 # Ingress controller
 provision_traefik = true
-provision_soa = false
+provision_secrets = true
+provision_soa = true
 
 ## File storage details
 # If the VCN is not provided by this template, the following variables must be provided
 fss_subnet_id = null
 # If the cluster and VCN are not provided by this template,
 fss_source_cidr = "0.0.0.0/0"
-
+# File Storage mount target Availability Domain index
+ad_number = 2
 
 ## Credentials
-# Container registry login credentials
+# Input your Container registry login credentials
 container_registry_email    = ""
 container_registry_password = ""
 
-# SOA Suite domain Admin Console credentials
+# Create SOA Suite domain Admin Console credentials
 soa_domain_admin_username = ""
+# Password must contain 1 Upper, 1 number and be at least 8 characters long
 soa_domain_admin_password = ""
 
-# Database credentials
+# Create Database credentials
+# Password must be 9 to 30 characters and contain at least 2 uppercase, 2 lowercase, 2 special, and 2 numeric characters. 
+# The special characters must be _, #, or -.
 db_sys_password = ""
 
-# RCU Schema credentials
+# Create RCU Schema credentials
 rcu_prefix = "SOA"
 rcu_username = "rcu"
+# Password must be 9 to 30 characters and contain at least 2 uppercase, 2 lowercase, 2 special, and 2 numeric characters. 
+# The special characters must be _, #, or -.
 rcu_password = ""
 
 # If connecting to an external DB, specify the jdbc_connection_url

@@ -56,7 +56,7 @@ module "fss" {
   provision_export     = var.provision_export
   compartment_ocid     = var.compartment_ocid
   subnet_id            = var.fss_subnet_id == null ? module.vcn.cluster_nodes_subnet_id : var.fss_subnet_id
-  ad_number            = 2
+  ad_number            = var.ad_number
   encryption_key_id    = var.secrets_encryption_key_ocid
   mount_path           = var.mount_path
   source_cidr          = var.provision_cluster == true ? module.vcn.cluster_nodes_subnet_cidr : var.fss_source_cidr
