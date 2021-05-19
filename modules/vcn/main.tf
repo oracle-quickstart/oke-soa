@@ -85,22 +85,16 @@ resource "oci_core_security_list" "node_sl" {
 
   # any traffic to cluster Pods subnet
   egress_security_rules {
-    protocol  = "all"
-    destination    = cidrsubnet(var.vcn_cidr, 8, 10)
-    stateless = true
+    protocol    = "all"
+    destination = cidrsubnet(var.vcn_cidr, 8, 10)
+    stateless   = true
   }
 
   # any traffic to cluster Services subnet
   egress_security_rules {
-    protocol  = "all"
-    destination    = cidrsubnet(var.vcn_cidr, 8, 20)
-    stateless = true
-  }
-
-  egress_security_rules {
-    protocol  = "all"
-    destination    = cidrsubnet(var.vcn_cidr, 8, 30)
-    stateless = true
+    protocol    = "all"
+    destination = cidrsubnet(var.vcn_cidr, 8, 20)
+    stateless   = true
   }
 
   # all traffic from cluster Pods subnet
@@ -116,13 +110,6 @@ resource "oci_core_security_list" "node_sl" {
     source    = cidrsubnet(var.vcn_cidr, 8, 20)
     stateless = true
   }
-
-  ingress_security_rules {
-    protocol  = "all"
-    source    = cidrsubnet(var.vcn_cidr, 8, 30)
-    stateless = true
-  }
-
 
   # SSH traffic to nodes subnet
   ingress_security_rules {
@@ -168,6 +155,115 @@ resource "oci_core_security_list" "node_sl" {
       code = 4
     }
   }
+
+  # File Storage ports
+  # TCP 111
+  ingress_security_rules {
+
+    protocol  = "6"
+    source    = var.vcn_cidr
+    stateless = false
+    tcp_options {
+      min = 111
+      max = 111
+    }
+  }
+
+  # TCP 2048-50
+  ingress_security_rules {
+
+    protocol  = "6"
+    source    = var.vcn_cidr
+    stateless = false
+    tcp_options {
+      min = 2048
+      max = 2050
+    }
+  }
+
+
+  # UDP 111
+  ingress_security_rules {
+
+    protocol  = "17"
+    source    = var.vcn_cidr
+    stateless = false
+    udp_options {
+      min = 111
+      max = 111
+    }
+  }
+
+  # UDP 2048
+  ingress_security_rules {
+
+    protocol  = "17"
+    source    = var.vcn_cidr
+    stateless = false
+    udp_options {
+      min = 2048
+      max = 2048
+    }
+  }
+
+  # UDP 111
+  egress_security_rules {
+
+    protocol    = "17"
+    destination = var.vcn_cidr
+    stateless   = false
+    udp_options {
+      min = 111
+      max = 111
+    }
+  }
+
+  # TCP 2048-2050
+  egress_security_rules {
+
+    protocol    = "6"
+    destination = var.vcn_cidr
+    stateless   = false
+    tcp_options {
+      min = 2048
+      max = 2050
+    }
+  }
+
+  # TCP 111
+  egress_security_rules {
+
+    protocol    = "6"
+    destination = var.vcn_cidr
+    stateless   = false
+    tcp_options {
+      min = 111
+      max = 111
+    }
+  }
+
+  # SOA Ports
+
+}
+
+# Create securty list for the database subnet 
+
+resource "oci_core_security_list" "database_sl" {
+  count          = var.provision_database ? 1 : 0
+  compartment_id = var.compartment_ocid
+  display_name   = "database-security-list"
+  vcn_id         = oci_core_virtual_network.vcn.id
+
+  # TCP traffic from cluster Pods subnet
+  ingress_security_rules {
+    protocol  = "6"
+    source    = cidrsubnet(var.vcn_cidr, 8, 10)
+    stateless = false
+    tcp_options {
+      max = 1521
+      min = 1521
+    }
+  }
 }
 
 # Create regional subnets in vcn
@@ -186,8 +282,8 @@ resource "oci_core_subnet" "cluster_lb_subnet" {
     command = "sleep 5"
   }
   provisioner "local-exec" {
-    when = destroy
-    command = "sleep 60"
+    when    = destroy
+    command = "sleep 5"
   }
 }
 
@@ -206,7 +302,28 @@ resource "oci_core_subnet" "cluster_nodes_subnet" {
     command = "sleep 5"
   }
   provisioner "local-exec" {
-    when = destroy
-    command = "sleep 180"
+    when    = destroy
+    command = "sleep 5"
+  }
+}
+
+resource "oci_core_subnet" "database_subnet" {
+  count                      = var.provision_database ? 1 : 0
+  cidr_block                 = cidrsubnet(var.vcn_cidr, 8, 30)
+  display_name               = "db-private-subnet"
+  compartment_id             = var.compartment_ocid
+  vcn_id                     = oci_core_virtual_network.vcn.id
+  dhcp_options_id            = oci_core_virtual_network.vcn.default_dhcp_options_id
+  route_table_id             = oci_core_route_table.private_rt.id
+  security_list_ids          = [oci_core_security_list.database_sl.0.id]
+  prohibit_public_ip_on_vnic = true
+  dns_label                  = "db"
+
+  provisioner "local-exec" {
+    command = "sleep 5"
+  }
+  provisioner "local-exec" {
+    when    = destroy
+    command = "sleep 5"
   }
 }

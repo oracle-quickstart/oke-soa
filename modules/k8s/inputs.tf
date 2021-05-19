@@ -6,11 +6,13 @@ variable "compartment_ocid" {}
 variable "vcn_id" {}
 variable "cluster_name" {}
 
+variable "provision_cluster" {}
+
 variable "oke_cluster" {
   default = {
-    k8s_version    = "v1.18.10"
-    pods_cidr      = "10.1.0.0/16"
-    services_cidr  = "10.2.0.0/16"
+    k8s_version   = "v1.18.10"
+    pods_cidr     = "10.1.0.0/16"
+    services_cidr = "10.2.0.0/16"
   }
 }
 variable "cluster_lb_subnet_ids" {}

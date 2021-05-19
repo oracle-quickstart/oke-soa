@@ -7,3 +7,5 @@ TF_VARS.sh
 *.p12
 cluster_admin_oci_config.txt
 .terraform.tfstate.lock.info
+fromtf.auto.yaml
+.terraform.lock.hcl

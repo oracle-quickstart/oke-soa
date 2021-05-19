@@ -11,7 +11,7 @@ variable "cluster_kube_config_token_version" {
 
 data "oci_containerengine_cluster_kube_config" "cluster_kube_config" {
   #Required
-  cluster_id = oci_containerengine_cluster.cluster.id
+  cluster_id = oci_containerengine_cluster.cluster[0].id
 
   #Optional
   expiration    = var.cluster_kube_config_expiration

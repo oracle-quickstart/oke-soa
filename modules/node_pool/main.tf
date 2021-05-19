@@ -2,7 +2,7 @@
 ## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
 
 resource "oci_containerengine_node_pool" "node_pool" {
-  count = length(var.node_pools)
+  count = var.provision_node_pool ? length(var.node_pools) : 0
 
   #Required
   cluster_id         = var.cluster_id
@@ -13,41 +13,36 @@ resource "oci_containerengine_node_pool" "node_pool" {
 
   #Optional
   dynamic "initial_node_labels" {
-      for_each = var.node_pools[count.index]["node_labels"]
-      content {
-          key = initial_node_labels.key
-          value = initial_node_labels.value
-      } 
+    for_each = var.node_pools[count.index]["node_labels"]
+    content {
+      key   = initial_node_labels.key
+      value = initial_node_labels.value
+    }
   }
 
   node_source_details {
     #Required
-    image_id    = data.oci_containerengine_node_pool_option.node_pool_options.sources.0.image_id
-    source_type = data.oci_containerengine_node_pool_option.node_pool_options.sources.0.source_type
+    image_id    = local.node_pool_images[count.index].0.image_id
+    source_type = local.node_pool_images[count.index].0.source_type
   }
 
   node_config_details {
     dynamic "placement_configs" {
-        for_each = [for ad in data.oci_identity_availability_domains.ads.availability_domains: {
-                name = ad.name
-        }]
-        content {
-            subnet_id = var.nodes_subnet_id
-            availability_domain = placement_configs.value.name
-        }
+      for_each = [for ad in data.oci_identity_availability_domains.ads.availability_domains : {
+        name = ad.name
+      }]
+      content {
+        subnet_id           = var.nodes_subnet_id
+        availability_domain = placement_configs.value.name
+      }
     }
     size = var.node_pools[count.index]["node_count"]
-    # placement_configs {
-    #     subnet_id = var.nodes_subnet_id
-    #     availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
-    # }
-    
   }
   ssh_public_key = var.ssh_authorized_key
 
   provisioner "local-exec" {
     command = "sleep 5"
-    when = destroy
+    when    = destroy
   }
 }
 

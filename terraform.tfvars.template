@@ -1,29 +1,96 @@
 ## Copyright © 2021, Oracle and/or its affiliates. 
 ## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
 
-tenancy_ocid = "ocid1.tenancy.oc1.."
-compartment_ocid = "ocid1.compartment.oc1.."
+tenancy_ocid     = "ocid1.tenancy.oc1..."
+compartment_ocid = "ocid1.compartment.oc1..."
 region           = "us-ashburn-1"
 
+deployment_name = "SOA-k8s"
+soa_domain_name = "mysoa"
+
+# Domain Type must be one of soa, soaess, soaosb, soaessosb
+soa_domain_type = "soaessosb"
+
+## Things to provision
+
+# VCN, OKE cluster, node_pool(s)
+# if false, the template assumes the cluster is provisioned and that kubectl has access to the cluster.
+provision_cluster = true
+
+# File Storage and mount point export 
+provision_filesystem = true
+provision_export = true
+
+# Database (DBaaS on OCI)
+# If false, a database jdbc_connection URL needs to be provided, and the database needs to be reachable from this VCN
+provision_database = true
+# WebLogic Operator
+provision_weblogic_operator = true
+# Ingress controller
+provision_traefik = true
+provision_secrets = true
+provision_soa = true
+
+## File storage details
+# If the VCN is not provided by this template, the following variables must be provided
+fss_subnet_id = null
+# If the cluster and VCN are not provided by this template,
+fss_source_cidr = "0.0.0.0/0"
+
+
+## Credentials
+# Container registry login credentials
+container_registry_email    = ""
+container_registry_password = ""
+
+# SOA Suite domain Admin Console credentials
+soa_domain_admin_username = ""
+soa_domain_admin_password = ""
+
+# Database credentials
+# must container 16 to 30 characters including 1 uppercase, 1 number and 1 special character -_#!%
+db_sys_password = ""
+
+# RCU Schema credentials
+rcu_prefix = "SOA"
+rcu_username = "rcu"
+rcu_password = ""
+
+# If connecting to an external DB, specify the jdbc_connection_url
+# !!! You will need to adjust the security list on your database VCN/subnet to authorize access from the OKE cluster nodes,
+# which may require VCN peering (not provided here)
+jdbc_connection_url = null
+
+# Database information
+database_name        = "SOA"
+database_unique_name = "SOA"
+
+# Kubernetes namespaces
+soa_kubernetes_namespace     = "soans"
+weblogic_operator_namespace  = "opns"
+ingress_controller_namespace = "traefik"
+
+# VCN config
 vcn_cidr = "10.0.0.0/16"
 
+# SSH key to access database and Kubernetes nodes
 ssh_authorized_key = ""
 
+# Cluster config
 oke_cluster = {
   name                                                    = "OKE_Cluster"
-  k8s_version                                             = "v1.19.7"
+  k8s_version                                             = "v1.18.10"
   pods_cidr                                               = "10.1.0.0/16"
   services_cidr                                           = "10.2.0.0/16"
   cluster_options_add_ons_is_kubernetes_dashboard_enabled = true
   cluster_options_add_ons_is_tiller_enabled               = true
 }
 
-# Note: 3 nodes are required at a minimum, across any number of pools, for etcd to deploy properly
 # defaults to 1 pool, feel free to add more if needed.
 node_pools = [
   {
     pool_name  = "pool1"
-    node_shape = "VM.Standard2.1"
+    node_shape = "VM.Standard2.4"
     node_count = 3
     node_labels = {
       "pool_name" = "pool1"

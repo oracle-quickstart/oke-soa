@@ -7,3 +7,4 @@ variable "ssh_authorized_key" {}
 variable "kubernetes_version" {}
 variable "node_pools" {}
 variable "nodes_subnet_id" {}
+variable "provision_node_pool" {}

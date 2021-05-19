@@ -1,6 +1,4 @@
 ## Copyright © 2021, Oracle and/or its affiliates. 
 ## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
 
-locals {
-  cluster_name = "${var.deployment_name}-cluster"
-}
+kubectl delete namespace ${namespace} --ignore-not-found=true

@@ -1,0 +1,26 @@
+## Copyright © 2021, Oracle and/or its affiliates. 
+## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
+
+if [[ ! $(kubectl get serviceaccount weblogic-operator -n ${weblogic_operator_namespace}) ]]; then
+  kubectl create serviceaccount -n ${weblogic_operator_namespace} weblogic-operator;
+fi
+
+CHART_VERSION=3.1.4
+
+helm repo add weblogic-operator https://oracle.github.io/weblogic-kubernetes-operator/charts --force-update
+
+helm install weblogic-operator weblogic-operator/weblogic-operator \
+  --version $CHART_VERSION \
+  --namespace ${weblogic_operator_namespace} \
+  --set image=ghcr.io/oracle/weblogic-kubernetes-operator:$CHART_VERSION \
+  --set serviceAccount=weblogic-operator \
+  --set "domainNamespaces={${soa_namespace}}" \
+  --wait \
+  --timeout 600s || exit 1
+
+while [[ ! $(kubectl get customresourcedefinition domains.weblogic.oracle -n ${weblogic_operator_namespace}) ]]; do
+  echo "Waiting for CRD to be created";
+  sleep 1;
+done
+
+echo "WebLogic Operator is installed and running"
