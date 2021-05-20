@@ -209,7 +209,7 @@ If you have opted for the default deployment, which deploys the SOA Suite chart 
 Otherwise to deploy a SOA domain (or an additional SOA domain), use the following command:
 
 ```bash
-helm repo add oracle https://streamnsight.github.io/helmcharts --force-update
+helm repo add oracle https://oracle.github.io/helm-charts --force-update
 
 helm install ${soa_domain_name} oracle/soa-suite \
     -f fromtf.auto.yaml \
