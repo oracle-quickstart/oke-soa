@@ -5,6 +5,12 @@ if [[ ! $(kubectl get serviceaccount weblogic-operator -n ${weblogic_operator_na
   kubectl create serviceaccount -n ${weblogic_operator_namespace} weblogic-operator;
 fi
 
+# wait for at least 1 node to be ready
+
+while [[ $(for i in $(kubectl get nodes -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}'); do if [[ "$i" == "True" ]]; then echo $i; fi; done | wc -l | tr -d " ") -lt 1 ]]; do
+    echo "waiting for at least 1 node to be ready..." && sleep 1;
+done
+
 CHART_VERSION=3.1.4
 
 helm repo add weblogic-operator https://oracle.github.io/weblogic-kubernetes-operator/charts --force-update
