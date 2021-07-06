@@ -307,7 +307,7 @@ terraform destroy --target=null_resource.deploy_soa
 To undeploy a SOA domain created manually with Helm, you first need to shut down the domain by updating the helm chart with
 
 ```bash
-helm update ${soa_domain_name} oracle/soa-suite \
+helm upgrade ${soa_domain_name} oracle/soa-suite \
   -n ${soa_namespace} \
   --reuse-values \
   --set domain.enabled=false \
