@@ -276,40 +276,32 @@ resource "null_resource" "deploy_soa" {
   ]
 
   triggers = {
-    soa_domain_name   = var.soa_domain_name
-    soa_domain_type   = var.soa_domain_type
-    soa_namespace     = var.soa_kubernetes_namespace
-    soa_domain_secret = "${var.soa_domain_name}-domain-credentials"
-    rcu_prefix        = var.rcu_prefix
-    rcu_secret        = "${var.soa_domain_name}-rcu-credentials"
-    db_secret         = "${var.soa_domain_name}-db-credentials"
-    # soa_admin_username  = var.soa_domain_admin_username
-    # soa_admin_password  = var.soa_domain_admin_password
-    # rcu_username        = var.rcu_username
-    # rcu_password        = var.rcu_password
+    soa_domain_name     = var.soa_domain_name
+    soa_domain_type     = var.soa_domain_type
+    soa_namespace       = var.soa_kubernetes_namespace
+    soa_domain_secret   = "${var.soa_domain_name}-domain-credentials"
+    rcu_prefix          = var.rcu_prefix
+    rcu_secret          = "${var.soa_domain_name}-rcu-credentials"
+    db_secret           = "${var.soa_domain_name}-db-credentials"
     jdbc_connection_url = var.jdbc_connection_url != null ? var.jdbc_connection_url : module.database.jdbc_connection_url
-    # db_sys_password     = var.db_sys_password
-    nfs_server_ip = module.fss.server_ip
-    path          = module.fss.path
+    nfs_server_ip       = module.fss.server_ip
+    path                = module.fss.path
+    k8s_version         = var.oke_cluster.k8s_version
   }
 
   provisioner "local-exec" {
     command = templatefile("./templates/deploy-soa.tpl", {
-      soa_domain_name   = var.soa_domain_name
-      soa_domain_type   = var.soa_domain_type
-      soa_namespace     = var.soa_kubernetes_namespace
-      soa_domain_secret = "${var.soa_domain_name}-domain-credentials"
-      rcu_prefix        = var.rcu_prefix
-      rcu_secret        = "${var.soa_domain_name}-rcu-credentials"
-      db_secret         = "${var.soa_domain_name}-db-credentials"
-      # soa_admin_username  = var.soa_domain_admin_username
-      # soa_admin_password  = var.soa_domain_admin_password
-      # rcu_username        = var.rcu_username
-      # rcu_password        = var.rcu_password
+      soa_domain_name     = var.soa_domain_name
+      soa_domain_type     = var.soa_domain_type
+      soa_namespace       = var.soa_kubernetes_namespace
+      soa_domain_secret   = "${var.soa_domain_name}-domain-credentials"
+      rcu_prefix          = var.rcu_prefix
+      rcu_secret          = "${var.soa_domain_name}-rcu-credentials"
+      db_secret           = "${var.soa_domain_name}-db-credentials"
       jdbc_connection_url = var.jdbc_connection_url != null ? var.jdbc_connection_url : module.database.jdbc_connection_url
-      # db_sys_password     = var.db_sys_password
-      nfs_server_ip = module.fss.server_ip
-      path          = module.fss.path
+      nfs_server_ip       = module.fss.server_ip
+      path                = module.fss.path
+      k8s_version         = var.oke_cluster.k8s_version
     })
   }
   provisioner "local-exec" {
