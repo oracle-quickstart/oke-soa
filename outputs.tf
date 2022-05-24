@@ -26,5 +26,6 @@ resource "local_file" "helm_values" {
     jdbc_connection_url = var.jdbc_connection_url != null ? var.jdbc_connection_url : module.database.jdbc_connection_url
     nfs_server_ip       = module.fss.server_ip
     path                = module.fss.path
+    k8s_version         = var.oke_cluster.k8s_version
   })
 }
