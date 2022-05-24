@@ -5,7 +5,7 @@ terraform {
   required_version = ">= 0.14.0"
   required_providers {
     oci = {
-      version = ">= 4.27.0"
+      version = ">= 4.76.0"
     }
   }
 }
@@ -13,5 +13,5 @@ terraform {
 provider "oci" {
   region               = var.region
   disable_auto_retries = "true"
-  config_file_profile = "DEFAULT"
+  config_file_profile  = "DEFAULT"
 }

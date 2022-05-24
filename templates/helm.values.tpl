@@ -10,6 +10,8 @@ oracledb:
     secretName: ${db_secret}
   url: ${jdbc_connection_url}
 
+kubernetesVersion: ${k8s_version}
+
 domain:
   domainName: ${soa_domain_name}
   type: ${soa_domain_type}
