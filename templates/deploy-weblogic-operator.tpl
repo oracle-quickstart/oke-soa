@@ -11,7 +11,7 @@ while [[ $(for i in $(kubectl get nodes -o 'jsonpath={..status.conditions[?(@.ty
     echo "waiting for at least 1 node to be ready..." && sleep 1;
 done
 
-CHART_VERSION=3.1.4
+CHART_VERSION=3.4.0
 
 helm repo add weblogic-operator https://oracle.github.io/weblogic-kubernetes-operator/charts --force-update
 

@@ -49,7 +49,7 @@ variable "fss_source_cidr" {
   default = "0.0.0.0/0"
 }
 variable "ad_number" {
-  default = 2
+  default = 1
 }
 
 variable "mount_path" {
@@ -128,7 +128,7 @@ variable "vcn_cidr" {
 ## OKE cluster details
 variable "oke_cluster" {
   default = {
-    k8s_version                                             = "v1.19.7"
+    k8s_version                                             = "v1.23.4"
     pods_cidr                                               = "10.1.0.0/16"
     services_cidr                                           = "10.2.0.0/16"
     cluster_options_add_ons_is_kubernetes_dashboard_enabled = true

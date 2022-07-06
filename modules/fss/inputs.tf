@@ -4,7 +4,7 @@
 variable "subnet_id" {}
 variable "compartment_ocid" {}
 variable "ad_number" {
-  default = 2
+  default = 1
 }
 variable "encryption_key_id" {
   default = null
