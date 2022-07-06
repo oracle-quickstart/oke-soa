@@ -49,7 +49,7 @@ variable "fss_source_cidr" {
   default = "0.0.0.0/0"
 }
 variable "ad_number" {
-  default = 2
+  default = 1
 }
 
 variable "mount_path" {
