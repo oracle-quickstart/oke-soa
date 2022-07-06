@@ -214,7 +214,7 @@ helm repo add oracle https://oracle.github.io/helm-charts --force-update
 helm install ${soa_domain_name} oracle/soa-suite \
     -f fromtf.auto.yaml \
     --namespace ${soa_namespace} \
-    --version 0.1.0 \
+    --version 0.3.0 \
     --wait  \
     --timeout 600s
 ```
