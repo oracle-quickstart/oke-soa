@@ -31,7 +31,7 @@ resource "null_resource" "oke_admin_service_account" {
   depends_on = [null_resource.cluster_kube_config]
 
   provisioner "local-exec" {
-    command = "kubectl create -f ./templates/oke-admin.ServiceAccount.yaml"
+    command = "if [[ ! $(kubectl get sa oke-admin -n kube-system) ]]; then kubectl create -f ./templates/oke-admin.ServiceAccount.yaml; fi"
   }
   provisioner "local-exec" {
     when       = destroy
@@ -52,7 +52,7 @@ resource "null_resource" "create_wls_operator_namespace" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl create namespace ${var.weblogic_operator_namespace}"
+    command = "if [[ ! $(kubectl get ns ${var.weblogic_operator_namespace}) ]]; then kubectl create namespace ${var.weblogic_operator_namespace}; fi"
   }
   provisioner "local-exec" {
     when       = destroy
@@ -70,7 +70,7 @@ resource "null_resource" "create_soa_namespace" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl create namespace ${var.soa_kubernetes_namespace}"
+    command = "if [[ ! $(kubectl get ns ${var.soa_kubernetes_namespace}) ]]; then kubectl create namespace ${var.soa_kubernetes_namespace}; fi"
   }
   provisioner "local-exec" {
     when       = destroy

@@ -8,8 +8,8 @@ region           = "us-ashburn-1"
 deployment_name = "SOA-k8s"
 soa_domain_name = "mysoa"
 
-# Domain Type must be one of soa, soaess, soaosb, soaessosb
-soa_domain_type = "soaessosb"
+# Domain Type must be one of soa, osb, soaosb
+soa_domain_type = "soaosb"
 
 ## Things to provision
 
