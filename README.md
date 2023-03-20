@@ -20,11 +20,11 @@ This terraform deployment requires the prior installation of the following:
 
     [tfswitch](https://tfswitch.warrensbox.com/Install/) can be used for flexibility of working with multiple versions of terraform, but it is only available on Linux and Mac OS X, for Windows or if you prefer to install the base software, see [https://learn.hashicorp.com/tutorials/terraform/install-cli](https://learn.hashicorp.com/tutorials/terraform/install-cli) for basic installation instructions.
 
-- **kubectl >= 1.22 (the Kubernetes cli)**
+- **kubectl >= 1.23 (the Kubernetes cli)**
 
     See [https://kubernetes.io/docs/tasks/tools/install-kubectl/](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for installation instructions, although kubectl is usually installed as part of Docker Desktop, so if you use Docker it is likely already installed.
 
-- **helm >= 3.5.4**
+- **helm >= 3.9.0**
 
     Helm is a kubernetes deployment package manager. The OCI Service Broker is packaged in a Helm chart, and so is the etcd cluster deployment.
     See [https://helm.sh/docs/intro/install/](https://helm.sh/docs/intro/install/) to install helm locally.
