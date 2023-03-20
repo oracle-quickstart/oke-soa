@@ -24,6 +24,15 @@ resource "oci_core_nat_gateway" "natgw" {
   vcn_id         = oci_core_virtual_network.vcn.id
 }
 
+resource "oci_core_service_gateway" "svc_gw" {
+  compartment_id = var.compartment_ocid
+  display_name   = "Service Gateway"
+  vcn_id         = oci_core_virtual_network.vcn.id
+  services {
+    service_id = lookup(data.oci_core_services.all_oci_services.services[0], "id")
+  }
+}
+
 # Create route table to connect public subnet to internet gateway 
 
 resource "oci_core_route_table" "public_rt" {
@@ -37,20 +46,6 @@ resource "oci_core_route_table" "public_rt" {
   }
 }
 
-resource "oci_core_service_gateway" "service_gateway" {
-    #Required
-    compartment_id = var.compartment_ocid
-    services {
-        #Required
-        service_id = data.oci_core_services.services.services[0].id
-    }
-    vcn_id = oci_core_virtual_network.vcn.id
-
-    #Optional
-    display_name = "Service GW"
-}
-
-
 # Create private subnert Route table to connect to NAT gateway
 
 resource "oci_core_route_table" "private_rt" {
@@ -62,10 +57,11 @@ resource "oci_core_route_table" "private_rt" {
     destination       = "0.0.0.0/0"
     network_entity_id = oci_core_nat_gateway.natgw.id
   }
+
   route_rules {
+    destination       = lookup(data.oci_core_services.all_oci_services.services[0], "cidr_block")
     destination_type  = "SERVICE_CIDR_BLOCK"
-    destination       = "all-sjc-services-in-oracle-services-network"
-    network_entity_id = oci_core_service_gateway.service_gateway.id
+    network_entity_id = oci_core_service_gateway.svc_gw.id
   }
 }
 
@@ -284,6 +280,14 @@ resource "oci_core_security_list" "database_sl" {
       max = 1521
       min = 1521
     }
+  }
+
+  # any traffic to cluster Services subnet
+  egress_security_rules {
+    protocol         = "6"
+    destination_type = "SERVICE_CIDR_BLOCK"
+    destination      = lookup(data.oci_core_services.all_oci_services.services[0], "cidr_block")
+    stateless        = false
   }
 }
 
