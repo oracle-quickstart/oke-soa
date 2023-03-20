@@ -6,3 +6,6 @@
 data "oci_identity_availability_domains" "ads" {
   compartment_id = var.compartment_ocid
 }
+
+data "oci_core_services" "services" {
+}

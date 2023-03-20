@@ -37,6 +37,20 @@ resource "oci_core_route_table" "public_rt" {
   }
 }
 
+resource "oci_core_service_gateway" "service_gateway" {
+    #Required
+    compartment_id = var.compartment_ocid
+    services {
+        #Required
+        service_id = data.oci_core_services.services.services[0].id
+    }
+    vcn_id = oci_core_virtual_network.vcn.id
+
+    #Optional
+    display_name = "Service GW"
+}
+
+
 # Create private subnert Route table to connect to NAT gateway
 
 resource "oci_core_route_table" "private_rt" {
@@ -47,6 +61,11 @@ resource "oci_core_route_table" "private_rt" {
     destination_type  = "CIDR_BLOCK"
     destination       = "0.0.0.0/0"
     network_entity_id = oci_core_nat_gateway.natgw.id
+  }
+  route_rules {
+    destination_type  = "SERVICE_CIDR_BLOCK"
+    destination       = "all-sjc-services-in-oracle-services-network"
+    network_entity_id = oci_core_service_gateway.service_gateway.id
   }
 }
 
